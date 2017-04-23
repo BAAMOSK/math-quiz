@@ -17,20 +17,24 @@ let quiz = [
 ];
 
 const state = {
-    currentQuestion: 0,
-    questionNumber: 1,
-    questionTotal: quiz.length,
-    score: 0,
-    quizView: "",
-    choices: ""
+  currentQuestion: 0,
+  questionNumber: 1,
+  questionTotal: quiz.length,
+  score: 0,
+  quizView: "",
+  choices: "",
+  message: "hello",
+  correct: "You got it right!",
+  wrong: "You got it wrong"
 };
 
 let answerChoices = {
-    answer1: quiz[state.currentQuestion].choices[0],
-    answer2: quiz[state.currentQuestion].choices[1],
-    answer3: quiz[state.currentQuestion].choices[2],
-    answer4: quiz[state.currentQuestion].choices[3],
-    answer5: quiz[state.currentQuestion].choices[4]
+  answer1: quiz[state.currentQuestion].choices[0],
+  answer2: quiz[state.currentQuestion].choices[1],
+  answer3: quiz[state.currentQuestion].choices[2],
+  answer4: quiz[state.currentQuestion].choices[3],
+  answer5: quiz[state.currentQuestion].choices[4],
+  correctAnswer: quiz[state.currentQuestion].correct
 };
 
 let quizView = "<div class=\"status\"><h3 class=\"current\">"+`Question ${state.questionNumber} of ${state.questionTotal}`+
@@ -42,21 +46,35 @@ let quizView = "<div class=\"status\"><h3 class=\"current\">"+`Question ${state.
       <label><input type="radio" name="option" value="${answerChoices.answer4}">${answerChoices.answer4}</label>
       <label><input type="radio" name="option" value="${answerChoices.answer5}">${answerChoices.answer5}</label>
     </div>
-    <button class="submit">Submit</button>`;
+    <button class="submit">Submit</button>
+    <p class="result">${state.message}</p>`;
  
 $(function() {
   $(".container").on("click", "button", function() {
     $(".container").html(quizView);
     
-    $('.submit').on('click', function(event) {
-      let userChoice = $('input[type="radio"]:checked').val();
+    $(".submit").on("click", "button", function(event) {      
+      event.preventDefault();
+      let userChoice = $("input[type=\"radio\"]:checked").val();      
       checkAnswer(userChoice);
-      //event.(console.log(userChoice));
-    });
+      console.log(state.message);
+      $(".container").append(state.message);
+    });    
   });
 });
 
-function checkAnswer() {}
+function checkAnswer(userInput) {
+  if(!userInput) {
+    state.message = "You need to pick one answer!";
+    return state.message;
+  }
+  if(userInput === answerChoices.correctAnswer) {
+    state.score++;
+    state.message = state.correct;
+  } else {
+    state.message = state.wrong;
+  } 
+}
 
 
 
