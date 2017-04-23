@@ -1,79 +1,110 @@
-let quiz = [
-  {
-    question: "What is 1 + 3 =",
-    choices: ["1","2","3","4","5"],
-    correct: "4"
-  },
-  {
-    question: "What is 4 + 1 =",
-    choices: ["1","2","3","4","5"],
-    correct: "5"
-  },
-  {
-    question: "What is 20 + 10 =",
-    choices: ["10","20","30","40","50"],
-    correct: "30"
+//Question constructor
+function Question(text, choices, answer) {
+  this.text = text;
+  this.choices = choices;
+  this.answer = answer;
+}
+//Validate Answer
+Question.prototype.correctAnswer = function(choice) {
+  return choice === this.answer;
+};
+//STATE
+function Quiz(questions) {
+  this.score = 0;
+  this.questions = questions;
+  this.questionIndex = 0;
+}
+//Current Question
+Quiz.prototype.getQuestionIndex = function() {
+  return this.questions[this.questionIndex];
+};
+//Check for end
+Quiz.prototype.isEnded = function() {
+  return this.questions.length === this.questionIndex;
+};
+
+//This is nextQuestion function() {};
+//Next Question -- Increment Score
+//answer = user's choice
+Quiz.prototype.guess = function(answer) {
+  this.questionIndex++;
+  if(this.getQuestionIndex().correctAnswer(answer)) {
+    this.score++;
   }
+};
+//QUIZ QUESTIONS
+let questions = [
+  new Question("What is my favorite color?", ["blue","green","purple","orange","flapjack"],"blue"),
+  new Question("What is 4 + 3 =", ["1","2","3","4","5"],"5"),
+  new Question("What is 13 + 13 =", ["21","42","26","84","88"],"26")
 ];
 
-const state = {
-  currentQuestion: 0,
-  questionNumber: 1,
-  questionTotal: quiz.length,
-  score: 0,
-  quizView: "",
-  choices: "",
-  message: "hello",
-  correct: "You got it right!",
-  wrong: "You got it wrong"
-};
+//Makes the quiz object
+let quiz = new Quiz(questions);
 
-let answerChoices = {
-  answer1: quiz[state.currentQuestion].choices[0],
-  answer2: quiz[state.currentQuestion].choices[1],
-  answer3: quiz[state.currentQuestion].choices[2],
-  answer4: quiz[state.currentQuestion].choices[3],
-  answer5: quiz[state.currentQuestion].choices[4],
-  correctAnswer: quiz[state.currentQuestion].correct
-};
-
-let quizView = "<div class=\"status\"><h3 class=\"current\">"+`Question ${state.questionNumber} of ${state.questionTotal}`+
-"</h3><h3 class=\"score\">"+ `Score: ${state.score}</h3>` + "</div><h1 class=\"question\">"+`${quiz[state.currentQuestion].question}`+"</h1>" +
-    `<div class="answers">
-      <label><input type="radio" name="option" value="${answerChoices.answer1}">${answerChoices.answer1}</label>
-      <label><input type="radio" name="option" value="${answerChoices.answer2}">${answerChoices.answer2}</label>
-      <label><input type="radio" name="option" value="${answerChoices.answer3}">${answerChoices.answer3}</label>
-      <label><input type="radio" name="option" value="${answerChoices.answer4}">${answerChoices.answer4}</label>
-      <label><input type="radio" name="option" value="${answerChoices.answer5}">${answerChoices.answer5}</label>
-    </div>
-    <button class="submit">Submit</button>
-    <p class="result">${state.message}</p>`; 
-
-$(".container").on("click", "button", function() {
-  $(".container").html(quizView);    
-});
-  
-$(".submit").on("click", "button", function(event) {      
-  event.preventDefault();
-  let userChoice = $("input[type=\"radio\"]:checked").val();
-  console.log(userChoice);      
-  checkAnswer(userChoice);
-  console.log(state.message);
-  $(".container").append(state.message);
-});  
-
-function checkAnswer(userInput) {
-  if(!userInput) {
-    state.message = "You need to pick one answer!";
-    return state.message;
-  }
-  if(userInput === answerChoices.correctAnswer) {
-    state.score++;
-    state.message = state.correct;
-  } else {
-    state.message = state.wrong;
-  } 
+//End of Quiz Result
+function showScores() {
+  let gameOver = `<h1>Result</h1>`;
+  gameOver += `<h2 id="score">Your score is: ${quiz.score}</h2>`;
+  $(".container").html(gameOver);
 }
 
+//Validate answer then go to next question
+//Run nextQuestion Function
+//--PURPOSE--
+//Take SUBMIT button then make something happen
+// function guess(usersChoice, correctAnswer) {
+  
+//   $('.submit').on('click', function() {
+//     let choice = $('input[type="radio"]:checked').val();
+//     console.log(choice);
+//     //1 -- validate answer and increment questionIndex
+//     quiz.guess(guess);
+//     //populate shows next question
+//     //2 -- then run this populate();
+//   });
+// };
 
+//RENDER QUESTION
+function populate() {
+  let element = $("#question");
 
+  if(quiz.isEnded()) {
+    showScores();
+  } else {
+    //show question
+    element.text(quiz.getQuestionIndex().text);
+    //show choices
+    let choices = quiz.getQuestionIndex().choices;
+    //console.log(choices);
+    for(let i = 0; i < choices.length; i++) {
+      let element = `answer${i}`;
+      $(`#${element}`).text(choices[i]);
+      //guess("btn" + i, choices[i]);      
+    }
+  }  
+}
+$('.submit').on('click', function() {
+  let index = Number($('input[type="radio"]:checked').val());
+  // console.log(index);
+  // console.log(typeof index);
+  let userChoice = quiz.getQuestionIndex().choices[index];
+  // console.log(typeof userChoice);
+  //console.log(userChoice);
+  let correctAnswer = quiz.getQuestionIndex().answer;
+  console.log(userChoice);
+  console.log(correctAnswer);
+  //validate question
+  function(userChoice, correctAnswer) {
+    if(userChoice === correctAnswer) {
+      quiz.score++;
+      quiz.questionIndex++;
+      populate();
+    } else {
+      console.log('wrong answer');
+    }  
+  }
+  //console.log(quiz.guess);
+});
+//runs the render function
+populate();

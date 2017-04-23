@@ -9,8 +9,22 @@
 </head>
 <body>
   <div class="container">
-    <h1>This is a simple math quiz. Select one answer from the choices. You must select an answer before proceeding. Good Luck.</h1>
-    <button id="start">Start Quiz</button>
+    <div class="status">
+      <h3 class="current"></h3><h3 class="score"></h3>
+    </div>
+    
+    <h1 id="question"></h1>
+      <div class="answers">
+        <label><input type="radio" name="option" value="0"><span id="answer0"></span></label>
+        <label><input type="radio" name="option" value="1"><span id="answer1"></span></label>
+        <label><input type="radio" name="option" value="2"><span id="answer2"></span></label>
+        <label><input type="radio" name="option" value="3"><span id="answer3"></span></label>
+        <label><input type="radio" name="option" value="4"><span id="answer4"></span></label>
+      </div>
+
+    <button class="submit">Submit</button>
+    
+    <p class="result"></p>
   </div>
   
   <script src="quiz.js"></script>
