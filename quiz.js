@@ -47,21 +47,20 @@ let quizView = "<div class=\"status\"><h3 class=\"current\">"+`Question ${state.
       <label><input type="radio" name="option" value="${answerChoices.answer5}">${answerChoices.answer5}</label>
     </div>
     <button class="submit">Submit</button>
-    <p class="result">${state.message}</p>`;
- 
-$(function() {
-  $(".container").on("click", "button", function() {
-    $(".container").html(quizView);
-    
-    $(".submit").on("click", "button", function(event) {      
-      event.preventDefault();
-      let userChoice = $("input[type=\"radio\"]:checked").val();      
-      checkAnswer(userChoice);
-      console.log(state.message);
-      $(".container").append(state.message);
-    });    
-  });
+    <p class="result">${state.message}</p>`; 
+
+$(".container").on("click", "button", function() {
+  $(".container").html(quizView);    
 });
+  
+$(".submit").on("click", "button", function(event) {      
+  event.preventDefault();
+  let userChoice = $("input[type=\"radio\"]:checked").val();
+  console.log(userChoice);      
+  checkAnswer(userChoice);
+  console.log(state.message);
+  $(".container").append(state.message);
+});  
 
 function checkAnswer(userInput) {
   if(!userInput) {
